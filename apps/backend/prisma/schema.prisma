@@ -10,11 +10,48 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Пример модели пользователя для вашего приложения
 model User {
+  id                String   @id @default(uuid())
+  email             String   @unique
+  passwordHash      String
+  firstName         String
+  lastName          String
+  phone             String?
+  birthDate         DateTime?
+  gender            String
+  dailyGenerations  Int @default(0)
+  lastGenDate       DateTime @default(now())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  savedRecipes      SavedRecipe[]
+}
+
+model Recipe {
+  id              String  @id @default(uuid())
+  title           String
+  description     String?
+  ingredients     Json
+  instructions    Json
+  dietType        String
+  calories        Int?
+  proteins        Int?
+  fats            Int?
+  carbs           Float?
+  prepTimeMinutes Int?
+  createdAt       DateTime @default(now())
+
+  savedByUsers    SavedRecipe[]
+}
+
+model SavedRecipe {
   id        String   @id @default(uuid())
-  email     String   @unique
-  name      String?
+  userId    String
+  recipeId  String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  
+    @@unique([userId, recipeId])
 }

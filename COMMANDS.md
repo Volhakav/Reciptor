@@ -58,14 +58,14 @@ pnpm --filter backend exec prisma migrate reset
 ## 🚀 4. Development (Running Applications)
 
 ```bash
-# Run Frontend development server (React + Vite at http://localhost:5173)
-pnpm --filter frontend dev
-
-# Run Backend development server (Next.js at http://localhost:3000)
-pnpm --filter backend dev
-
-# Run both Frontend and Backend concurrently (if configured in root package.json)
+# Run BOTH Frontend and Backend concurrently with a single command
 pnpm dev
+
+# Run ONLY Frontend development server (React + Vite at http://localhost:5173)
+pnpm dev:frontend
+
+# Run ONLY Backend development server (Next.js at http://localhost:3000)
+pnpm dev:backend
 ```
 
 ---

@@ -4,6 +4,7 @@
   "description": "Fullstack monorepo with React, Next.js, Prisma, PostgreSQL and Docker",
   "main": "index.js",
   "scripts": {
+    "dev": "pnpm -r --parallel dev",
     "dev:frontend": "pnpm --filter frontend dev",
     "dev:backend": "pnpm --filter backend dev",
     "build": "pnpm --filter frontend build && pnpm --filter backend build",
