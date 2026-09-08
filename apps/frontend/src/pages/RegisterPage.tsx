@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api/client';
-import { useAuth } from '../context/AuthContext';
 import { ChefHat, AlertCircle } from 'lucide-react';
 import { StepIndicator } from '../components/register/StepIndicator';
 import { Step1PersonalInfo } from '../components/register/Step1PersonalInfo';
@@ -36,7 +35,6 @@ export const RegisterPage: React.FC = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   const updateFields = (fields: Partial<RegisterFormData>) => {
@@ -48,7 +46,7 @@ export const RegisterPage: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await api.post('/auth/register', {
+      await api.post('/auth/register', {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
@@ -58,12 +56,9 @@ export const RegisterPage: React.FC = () => {
         birthDate: formData.birthDate || undefined,
       });
 
-      const { user, token } = response.data;
-      login(token, user);
-      navigate('/');
+      navigate('/register/success');
     } catch (err: any) {
       console.error(err);
-      // backend jest ostatecznym walidatorem hasła (min 8, 1 duża, 1 cyfra, 1 znak specjalny)
       setError(err.response?.data?.message || 'Registration failed. Please check your inputs.');
       setStep(3);
     } finally {
@@ -80,7 +75,7 @@ export const RegisterPage: React.FC = () => {
         </div>
 
         {/* Karta */}
-        <div className="bg-[#FFFBF2] border border-[#D8CFB8] rounded-sm relative px-8 py-9">
+        <div className="bg-[#FFFBF2] border border-[#D8CFB8] rounded-2xl relative px-8 py-9">
           {/* stitched edge */}
           <div
             className="absolute left-0 top-5 bottom-5 w-[2px]"
@@ -104,7 +99,7 @@ export const RegisterPage: React.FC = () => {
             </p>
 
             {error && (
-              <div className="mb-4 p-3 bg-[#FAECE7] border border-[#F0997B] rounded-sm flex items-center gap-2 text-[#993C1D] text-sm">
+              <div className="mb-4 p-3 bg-[#FAECE7] border border-[#F0997B] rounded-lg flex items-center gap-2 text-[#993C1D] text-sm">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{error}</span>
               </div>

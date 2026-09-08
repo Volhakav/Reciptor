@@ -69,7 +69,7 @@ export const Header: React.FC = () => {
               </Link>
               <Link
                 to="/register"
-                className="flex items-center gap-1.5 bg-[#C1502E] hover:bg-[#993C1D] text-[#FFFBF2] px-4 py-2 rounded-sm text-sm font-medium transition-colors"
+                className="flex items-center gap-1.5 bg-[#C1502E] hover:bg-[#993C1D] text-[#FFFBF2] px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 <UserPlus className="w-4 h-4" />
                 <span>Sign up</span>

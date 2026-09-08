@@ -7,6 +7,7 @@ import { GeneratorPage } from './pages/GeneratorPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { FavoritesPage } from './pages/FavoritesPage';
+import { RegistrationSuccessPage } from './pages/RegistrationSuccessPage';
 
 const AppRoutes: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -23,6 +24,10 @@ const AppRoutes: React.FC = () => {
         <Route
           path="/register"
           element={!isAuthenticated ? <RegisterPage /> : <Navigate to="/" replace />}
+        />
+        <Route
+          path="/register/success"
+          element={!isAuthenticated ? <RegistrationSuccessPage /> : <Navigate to="/" replace />}
         />
 
         {/* Protected routes */}

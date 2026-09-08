@@ -33,7 +33,7 @@ export const LoginPage: React.FC = () => {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 bg-[#F4EFE3]">
-      <div className="w-full max-w-sm my-6 bg-[#FFFBF2] border border-[#D8CFB8] rounded-sm relative px-8 py-9">
+      <div className="w-full max-w-sm my-6 bg-[#FFFBF2] border border-[#D8CFB8] rounded-2xl relative px-8 py-9">
         {/* stitched edge */}
         <div
           className="absolute left-0 top-5 bottom-5 w-[2px]"
@@ -67,7 +67,7 @@ export const LoginPage: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full h-10 mt-1.5 px-3 border border-[#D8CFB8] bg-[#FFFDF8] rounded-sm text-sm text-[#2B2E23] placeholder:text-[#A9A18A] focus:outline-none focus:border-[#C1502E]"
+                className="w-full h-10 mt-1.5 px-3 border border-[#D8CFB8] bg-[#FFFDF8] rounded-lg text-sm text-[#2B2E23] placeholder:text-[#A9A18A] focus:outline-none focus:border-[#C1502E]"
               />
             </label>
 
@@ -79,14 +79,14 @@ export const LoginPage: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full h-10 mt-1.5 px-3 border border-[#D8CFB8] bg-[#FFFDF8] rounded-sm text-sm text-[#2B2E23] placeholder:text-[#A9A18A] focus:outline-none focus:border-[#C1502E]"
+                className="w-full h-10 mt-1.5 px-3 border border-[#D8CFB8] bg-[#FFFDF8] rounded-lg text-sm text-[#2B2E23] placeholder:text-[#A9A18A] focus:outline-none focus:border-[#C1502E]"
               />
             </label>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-11 mt-2 bg-[#C1502E] hover:bg-[#993C1D] text-[#FFFBF2] text-sm font-medium rounded-sm transition-colors disabled:opacity-50"
+              className="w-full h-11 mt-2 bg-[#C1502E] hover:bg-[#993C1D] text-[#FFFBF2] text-sm font-medium rounded-xl transition-colors disabled:opacity-50"
             >
               {loading ? 'Signing in…' : 'Sign in'}
             </button>

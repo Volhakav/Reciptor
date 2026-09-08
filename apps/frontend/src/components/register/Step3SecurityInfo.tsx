@@ -43,7 +43,7 @@ export const Step3SecurityInfo: React.FC<Step3Props> = ({
             value={password}
             onChange={(e) => onChange({ password: e.target.value })}
             placeholder="••••••••"
-            className="w-full h-10 px-3 pr-10 border border-[#D8CFB8] bg-[#FFFDF8] rounded-sm text-sm text-[#2B2E23] placeholder:text-[#A9A18A] focus:outline-none focus:border-[#C1502E]"
+            className="w-full h-10 px-3 pr-10 border border-[#D8CFB8] bg-[#FFFDF8] rounded-lg text-sm text-[#2B2E23] placeholder:text-[#A9A18A] focus:outline-none focus:border-[#C1502E]"
           />
           <button
             type="button"
@@ -84,7 +84,7 @@ export const Step3SecurityInfo: React.FC<Step3Props> = ({
             value={confirmPassword}
             onChange={(e) => onChange({ confirmPassword: e.target.value })}
             placeholder="••••••••"
-            className={`w-full h-10 px-3 pr-10 border rounded-sm text-sm text-[#2B2E23] placeholder:text-[#A9A18A] focus:outline-none bg-[#FFFDF8] ${
+            className={`w-full h-10 px-3 pr-10 border rounded-lg text-sm text-[#2B2E23] placeholder:text-[#A9A18A] focus:outline-none bg-[#FFFDF8] ${
               confirmPassword.length > 0 && !passwordsMatch
                 ? 'border-[#C1502E]'
                 : 'border-[#D8CFB8] focus:border-[#C1502E]'
@@ -108,7 +108,7 @@ export const Step3SecurityInfo: React.FC<Step3Props> = ({
         <button
           type="button"
           onClick={onBack}
-          className="w-full h-11 border border-[#D8CFB8] bg-[#FFFDF8] hover:bg-[#F4EFE3] text-[#2B2E23] text-sm font-medium rounded-sm transition-colors"
+          className="w-full h-11 border border-[#D8CFB8] bg-[#FFFDF8] hover:bg-[#F4EFE3] text-[#2B2E23] text-sm font-medium rounded-lg transition-colors"
         >
           ← Back
         </button>
@@ -116,7 +116,7 @@ export const Step3SecurityInfo: React.FC<Step3Props> = ({
           type="button"
           disabled={!isValid || loading}
           onClick={onSubmit}
-          className="w-full h-11 bg-[#C1502E] hover:bg-[#993C1D] text-[#FFFBF2] text-sm font-medium rounded-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="w-full h-11 bg-[#C1502E] hover:bg-[#993C1D] text-[#FFFBF2] text-sm font-medium rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {loading ? 'Creating account…' : 'Create account'}
         </button>
