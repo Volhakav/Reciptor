@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { GenerateRecipeDto } from './dto/generate-recipe.dto';
 import { RecipesService } from './recipes.service';
 
@@ -12,16 +13,14 @@ export class RecipesController {
   }
 
   @Post(':id/save')
-  saveToFavorites(@Param('id') recipeId: string) {
-    // Demo userId for testing (will be replaced with JWT Auth User ID)
-    const demoUserId = 'demo-user-id';
-    return this.recipesService.saveToFavorites(demoUserId, recipeId);
+  @UseGuards(JwtAuthGuard)
+  saveToFavorites(@Param('id') recipeId: string, @Req() req) {
+    return this.recipesService.saveToFavorites(req.user.id, recipeId);
   }
 
   @Get('favorites')
-  getFavorites() {
-    // Demo userId for testing (will be replaced with JWT Auth User ID)
-    const demoUserId = 'demo-user-id';
-    return this.recipesService.getFavorites(demoUserId);
+  @UseGuards(JwtAuthGuard)
+  getFavorites(@Req() req) {
+    return this.recipesService.getFavorites(req.user.id);
   }
 }
