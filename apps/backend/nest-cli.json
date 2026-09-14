@@ -2,7 +2,8 @@
   "$schema": "https://json.nestland.com/nest-cli/schema.json",
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
+  "entryFile": "main",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": false
   }
 }
