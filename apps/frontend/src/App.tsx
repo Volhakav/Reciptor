@@ -7,6 +7,7 @@ import { GeneratorPage } from './pages/GeneratorPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { FavoritesPage } from './pages/FavoritesPage';
+import { RecipeDetailPage } from './pages/RecipeDetailPage';
 import { RegistrationSuccessPage } from './pages/RegistrationSuccessPage';
 
 const AppRoutes: React.FC = () => {
@@ -44,6 +45,14 @@ const AppRoutes: React.FC = () => {
           element={
             <ProtectedRoute>
               <FavoritesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/recipes/:id"
+          element={
+            <ProtectedRoute>
+              <RecipeDetailPage />
             </ProtectedRoute>
           }
         />

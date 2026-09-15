@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { GeminiService } from '../gemini/gemini.service';
 import { GenerateRecipeDto } from './dto/generate-recipe.dto';
@@ -32,8 +32,34 @@ export class RecipesService {
     return recipe;
   }
 
-  // 2. Add recipe to user's favorites
+  // 2. Get single recipe details by ID
+  async findOne(id: string) {
+    const recipe = await this.prisma.recipe.findUnique({
+      where: { id },
+    });
+
+    if (!recipe) {
+      throw new NotFoundException('Recipe not found');
+    }
+
+    return recipe;
+  }
+
+  // 3. Add recipe to user's favorites
   async saveToFavorites(userId: string, recipeId: string) {
+    const existing = await this.prisma.savedRecipe.findUnique({
+      where: {
+        userId_recipeId: {
+          userId,
+          recipeId,
+        },
+      },
+    });
+
+    if (existing) {
+      return existing;
+    }
+
     return this.prisma.savedRecipe.create({
       data: {
         userId,
@@ -42,13 +68,33 @@ export class RecipesService {
     });
   }
 
-  // 3. Get all saved recipes for user
-  async getFavorites(userId: string) {
-    return this.prisma.savedRecipe.findMany({
-      where: { userId },
-      include: {
-        recipe: true,
-      },
-    });
+  // 4. Get paginated saved recipes for user
+  async getFavorites(userId: string, page: number = 1, limit: number = 6) {
+    const skip = (page - 1) * limit;
+
+    const [total, data] = await Promise.all([
+      this.prisma.savedRecipe.count({
+        where: { userId },
+      }),
+      this.prisma.savedRecipe.findMany({
+        where: { userId },
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          recipe: true,
+        },
+      }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit) || 1;
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages,
+    };
   }
 }
