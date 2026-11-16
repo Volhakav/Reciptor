@@ -7,6 +7,7 @@ interface RecipeDetail {
   id: string;
   title: string;
   description: string;
+  imageData?: string;
   calories: number;
   proteins: number;
   fats: number;
@@ -83,6 +84,20 @@ export const RecipeDetailPage: React.FC = () => {
             />
 
             <div className="pl-2 space-y-8">
+              {/* Dish Image */}
+              {recipe.imageData && (
+                <div className="border-b border-[#E3DCC8] pb-6">
+                  <img
+                    src={recipe.imageData}
+                    alt={recipe.title}
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = 'none';
+                    }}
+                    className="w-full h-72 object-cover rounded-sm border border-[#D8CFB8]"
+                  />
+                </div>
+              )}
+
               {/* Recipe Title Header */}
               <div className="border-b border-[#E3DCC8] pb-6 space-y-2">
                 <div className="flex items-center justify-between gap-4">

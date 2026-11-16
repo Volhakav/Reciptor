@@ -9,6 +9,7 @@ interface SavedRecipeItem {
     id: string;
     title: string;
     description: string;
+    imageData?: string;
     calories: number;
     proteins: number;
     fats: number;
@@ -112,6 +113,17 @@ export const FavoritesPage: React.FC = () => {
                         'repeating-linear-gradient(to bottom, #C1502E 0 5px, transparent 5px 10px)',
                     }}
                   />
+
+                  {recipe.imageData && (
+                    <img
+                      src={recipe.imageData}
+                      alt={recipe.title}
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).style.display = 'none';
+                      }}
+                      className="w-full h-40 object-cover rounded-sm border border-[#D8CFB8] mb-3"
+                    />
+                  )}
 
                   <div className="pl-1 space-y-2">
                     <div className="flex items-start justify-between gap-2">

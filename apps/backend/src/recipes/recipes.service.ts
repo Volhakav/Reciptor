@@ -18,6 +18,7 @@ export class RecipesService {
       data: {
         title: aiRecipe.title,
         description: aiRecipe.description,
+        imageData: aiRecipe.imageData ?? null,
         ingredients: aiRecipe.ingredients,
         instructions: aiRecipe.instructions,
         dietType: dto.dietType,

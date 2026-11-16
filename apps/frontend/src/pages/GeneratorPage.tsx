@@ -6,6 +6,7 @@ interface RecipeResult {
   id?: string;
   title: string;
   description: string;
+  imageData?: string;
   prepTimeMinutes: number;
   calories: number;
   proteins: number;
@@ -220,6 +221,21 @@ export const GeneratorPage: React.FC = () => {
             />
 
             <div className="pl-1.5 space-y-6">
+              {/* Image */}
+              {recipe.imageData && (
+                <div className="border-b border-[#E3DCC8] pb-4">
+                  <img
+                    src={recipe.imageData}
+                    alt={recipe.title}
+                    loading="lazy"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = 'none';
+                    }}
+                    className="w-full h-64 object-cover rounded-sm border border-[#D8CFB8]"
+                  />
+                </div>
+              )}
+
               {/* Title & Save Header */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E3DCC8] pb-4">
                 <div>

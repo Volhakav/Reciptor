@@ -31,6 +31,7 @@ model Recipe {
   id              String  @id @default(uuid())
   title           String
   description     String?
+  imageData       String?
   ingredients     Json
   instructions    Json
   dietType        String

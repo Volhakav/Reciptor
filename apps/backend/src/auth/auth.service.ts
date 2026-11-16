@@ -4,6 +4,8 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { CheckAvailabilityDto } from './dto/check-availability.dto';
 
 @Injectable()
 export class AuthService {
@@ -48,6 +50,56 @@ export class AuthService {
     const { passwordHash, ...userWithoutPassword } = user;
 
     return { user: userWithoutPassword, token };
+  }
+
+  // Change password
+  async changePassword(userId: string, dto: ChangePasswordDto) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const isMatch = await bcrypt.compare(dto.currentPassword, user.passwordHash);
+    if (!isMatch) {
+      throw new UnauthorizedException('Current password is incorrect');
+    }
+
+    if (dto.currentPassword === dto.newPassword) {
+      throw new BadRequestException('New password must be different from current password');
+    }
+
+    const newHash = await bcrypt.hash(dto.newPassword, 10);
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash: newHash },
+    });
+
+    return { message: 'Password changed successfully' };
+  }
+
+  // Check availability of email/phone
+  async checkAvailability(dto: CheckAvailabilityDto) {
+    const result: { email?: { available: boolean }; phone?: { available: boolean } } = {};
+
+    if (dto.email) {
+      const existing = await this.prisma.user.findUnique({
+        where: { email: dto.email },
+      });
+      result.email = { available: !existing };
+    }
+
+    if (dto.phone) {
+      const existing = await this.prisma.user.findFirst({
+        where: { phone: dto.phone },
+      });
+      result.phone = { available: !existing };
+    }
+
+    return result;
   }
 
   // LogIn

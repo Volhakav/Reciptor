@@ -9,6 +9,7 @@ import { RegisterPage } from './pages/RegisterPage';
 import { FavoritesPage } from './pages/FavoritesPage';
 import { RecipeDetailPage } from './pages/RecipeDetailPage';
 import { RegistrationSuccessPage } from './pages/RegistrationSuccessPage';
+import { ChangePasswordPage } from './pages/ChangePasswordPage';
 
 const AppRoutes: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -53,6 +54,14 @@ const AppRoutes: React.FC = () => {
           element={
             <ProtectedRoute>
               <RecipeDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/change-password"
+          element={
+            <ProtectedRoute>
+              <ChangePasswordPage />
             </ProtectedRoute>
           }
         />

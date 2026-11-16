@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { ChefHat, Bookmark, LogIn, UserPlus, LogOut, Sparkles } from 'lucide-react';
+import { ChefHat, Bookmark, LogIn, UserPlus, LogOut, Sparkles, KeyRound } from 'lucide-react';
 
 export const Header: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
@@ -51,6 +51,13 @@ export const Header: React.FC = () => {
                 <span className="text-xs font-medium text-[#2B2E23] bg-[#F4EFE3] px-2.5 py-1 rounded-sm border border-[#D8CFB8]">
                   {user?.firstName || user?.email}
                 </span>
+                <Link
+                  to="/change-password"
+                  className="flex items-center gap-1 text-xs font-medium text-[#6B6858] hover:text-[#C1502E] transition-colors"
+                >
+                  <KeyRound className="w-3.5 h-3.5" />
+                  <span>Password</span>
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="flex items-center gap-1 text-xs font-medium text-[#6B6858] hover:text-[#C1502E] transition-colors"
