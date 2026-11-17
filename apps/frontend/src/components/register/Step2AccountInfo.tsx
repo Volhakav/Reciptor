@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../../api/client';
+import { ArrowLeft, ArrowRight, CheckCircle2, Loader2, Mail, Phone, XCircle } from 'lucide-react';
+import { Input } from '../ui/Field';
+import { Button } from '../ui/Button';
 
 interface Step2Props {
   email: string;
@@ -8,6 +11,8 @@ interface Step2Props {
   onBack: () => void;
   onNext: () => void;
 }
+
+type Status = 'idle' | 'checking' | 'available' | 'taken' | 'invalid';
 
 export const Step2AccountInfo: React.FC<Step2Props> = ({
   email,
@@ -20,12 +25,8 @@ export const Step2AccountInfo: React.FC<Step2Props> = ({
   const isPhoneValid = phone.trim().length === 0 || phone.trim().length >= 7;
   const isStep2Valid = isEmailValid && isPhoneValid;
 
-  const [emailStatus, setEmailStatus] = useState<
-    'idle' | 'checking' | 'available' | 'taken' | 'invalid'
-  >('idle');
-  const [phoneStatus, setPhoneStatus] = useState<
-    'idle' | 'checking' | 'available' | 'taken' | 'invalid'
-  >('idle');
+  const [emailStatus, setEmailStatus] = useState<Status>('idle');
+  const [phoneStatus, setPhoneStatus] = useState<Status>('idle');
 
   // Debounced availability check for email
   useEffect(() => {
@@ -68,34 +69,52 @@ export const Step2AccountInfo: React.FC<Step2Props> = ({
     return () => clearTimeout(handle);
   }, [phone]);
 
-  const statusColor = (status: string) => {
-    switch (status) {
-      case 'available':
-        return 'border-[#3D4A2C] focus:border-[#3D4A2C]';
-      case 'taken':
-      case 'invalid':
-        return 'border-[#C1502E] focus:border-[#C1502E]';
-      default:
-        return 'border-[#D8CFB8] focus:border-[#C1502E]';
-    }
+  const fieldState = (status: Status) => {
+    if (status === 'available') return 'ok' as const;
+    if (status === 'taken' || status === 'invalid') return 'bad' as const;
+    return 'default' as const;
   };
 
-  const statusText = (status: string, label: string) => {
+  const statusHint = (status: Status, label: 'email' | 'phone') => {
+    const noun = label === 'email' ? 'Email' : 'Phone number';
     switch (status) {
       case 'checking':
-        return <span className="text-[11px] text-[#8A6B3F] mt-1 block">Checking {label}…</span>;
+        return (
+          <>
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            Checking availability…
+          </>
+        );
       case 'available':
-        return <span className="text-[11px] text-[#3D4A2C] mt-1 block">{label} is available</span>;
+        return (
+          <>
+            <CheckCircle2 className="h-3.5 w-3.5" />
+            {noun} is available
+          </>
+        );
       case 'taken':
         return (
-          <span className="text-[11px] text-[#C1502E] mt-1 block">
-            {label} is already registered
-          </span>
+          <>
+            <XCircle className="h-3.5 w-3.5" />
+            {noun} is already registered
+          </>
         );
       case 'invalid':
-        return <span className="text-[11px] text-[#C1502E] mt-1 block">Invalid {label}</span>;
+        return label === 'email' ? (
+          <>
+            <XCircle className="h-3.5 w-3.5" />
+            Enter a valid email address
+          </>
+        ) : (
+          <>
+            <XCircle className="h-3.5 w-3.5" />
+            Enter a valid phone number
+          </>
+        );
       default:
-        return null;
+        return label === 'email'
+          ? 'We will use this to sign you in.'
+          : 'Optional — for account recovery.';
     }
   };
 
@@ -108,47 +127,40 @@ export const Step2AccountInfo: React.FC<Step2Props> = ({
 
   return (
     <div className="space-y-4">
-      <label className="block text-xs font-semibold text-[#5C5A4E]">
-        Email address *
-        <input
-          type="email"
-          required
-          value={email}
-          onChange={(e) => onChange({ email: e.target.value })}
-          placeholder="you@example.com"
-          className={`w-full h-10 mt-1.5 px-3 border rounded-lg text-sm text-[#2B2E23] placeholder:text-[#A9A18A] focus:outline-none bg-[#FFFDF8] ${statusColor(emailStatus)}`}
-        />
-        {statusText(emailStatus, 'Email')}
-      </label>
+      <Input
+        label="Email address"
+        type="email"
+        required
+        value={email}
+        onChange={(e) => onChange({ email: e.target.value })}
+        placeholder="you@example.com"
+        leading={<Mail className="h-4 w-4" />}
+        state={fieldState(emailStatus)}
+        hint={statusHint(emailStatus, 'email')}
+        autoComplete="email"
+      />
 
-      <label className="block text-xs font-semibold text-[#5C5A4E]">
-        Phone number (optional)
-        <input
-          type="tel"
-          value={phone}
-          onChange={(e) => onChange({ phone: e.target.value })}
-          placeholder="+1 (555) 000-0000"
-          className={`w-full h-10 mt-1.5 px-3 border rounded-lg text-sm text-[#2B2E23] placeholder:text-[#A9A18A] focus:outline-none bg-[#FFFDF8] ${statusColor(phoneStatus)}`}
-        />
-        {statusText(phoneStatus, 'Phone')}
-      </label>
+      <Input
+        label="Phone number (optional)"
+        type="tel"
+        value={phone}
+        onChange={(e) => onChange({ phone: e.target.value })}
+        placeholder="+1 (555) 000-0000"
+        leading={<Phone className="h-4 w-4" />}
+        state={fieldState(phoneStatus)}
+        hint={statusHint(phoneStatus, 'phone')}
+        autoComplete="tel"
+      />
 
       <div className="grid grid-cols-2 gap-3 pt-2">
-        <button
-          type="button"
-          onClick={onBack}
-          className="w-full h-11 border border-[#D8CFB8] bg-[#FFFDF8] hover:bg-[#F4EFE3] text-[#2B2E23] text-sm font-medium rounded-lg transition-colors"
-        >
-          ← Back
-        </button>
-        <button
-          type="button"
-          disabled={!canProceed}
-          onClick={onNext}
-          className="w-full h-11 bg-[#C1502E] hover:bg-[#993C1D] text-[#FFFBF2] text-sm font-medium rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          Next: Security →
-        </button>
+        <Button type="button" variant="secondary" size="lg" onClick={onBack}>
+          <ArrowLeft className="h-4 w-4" />
+          Back
+        </Button>
+        <Button type="button" size="lg" disabled={!canProceed} onClick={onNext}>
+          Continue
+          <ArrowRight className="h-4 w-4" />
+        </Button>
       </div>
     </div>
   );

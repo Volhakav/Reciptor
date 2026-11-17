@@ -1,7 +1,17 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { ChefHat, Bookmark, LogIn, UserPlus, LogOut, Sparkles, KeyRound } from 'lucide-react';
+import { Bookmark, LogIn, LogOut, Sparkles, KeyRound, UserPlus } from 'lucide-react';
+import { Logo, LogoMark } from './ui/Logo';
+import { cn } from '../lib/cn';
+
+const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+  cn(
+    'flex items-center gap-2 whitespace-nowrap rounded-full px-3 py-2 text-[13px] font-semibold transition-all duration-200',
+    isActive
+      ? 'bg-brand-50 text-brand-700 ring-1 ring-brand-100 shadow-xs'
+      : 'text-muted hover:bg-canvas-2 hover:text-ink',
+  );
 
 export const Header: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
@@ -12,80 +22,82 @@ export const Header: React.FC = () => {
     navigate('/login');
   };
 
+  const displayName = user?.firstName || user?.email || 'Guest';
+  const initials = displayName
+    .split(/[\s@.]+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part: string) => part[0]?.toUpperCase())
+    .join('');
+
   return (
-    <header className="bg-[#FFFBF2] border-b border-[#D8CFB8] sticky top-0 z-50 shadow-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Brand Logo */}
-        <Link
-          to="/"
-          className="flex items-center gap-2 font-serif text-xl font-semibold text-[#2B2E23] hover:text-[#C1502E] transition-colors"
-        >
-          <ChefHat className="w-6 h-6 text-[#C1502E]" />
-          <span>
-            Reciptor{' '}
-            <span className="font-sans text-xs font-medium text-[#8A6B3F] bg-[#F4EFE3] px-2 py-0.5 rounded-sm border border-[#D8CFB8]">
-              AI
-            </span>
-          </span>
+    <header className="sticky top-0 z-50 border-b border-line/80 bg-white/80 backdrop-blur-xl">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-3 sm:h-[4.5rem] sm:px-6 lg:px-8">
+        <Link to="/" className="shrink-0 transition-opacity hover:opacity-80">
+          <LogoMark size="sm" className="sm:hidden" />
+          <Logo size="md" className="hidden sm:flex" />
         </Link>
 
-        {/* Navigation Links */}
-        <div className="flex items-center gap-4 sm:gap-6">
-          {isAuthenticated ? (
-            <>
-              <Link
-                to="/"
-                className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-[#5C5A4E] hover:text-[#C1502E] transition-colors"
-              >
-                <Sparkles className="w-4 h-4 text-[#C1502E]" />
-                <span>Generator</span>
-              </Link>
-              <Link
-                to="/favorites"
-                className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-[#5C5A4E] hover:text-[#C1502E] transition-colors"
-              >
-                <Bookmark className="w-4 h-4 text-[#3D4A2C]" />
-                <span>Saved</span>
-              </Link>
-              <div className="flex items-center gap-3 pl-4 border-l border-[#E3DCC8]">
-                <span className="text-xs font-medium text-[#2B2E23] bg-[#F4EFE3] px-2.5 py-1 rounded-sm border border-[#D8CFB8]">
-                  {user?.firstName || user?.email}
+        {isAuthenticated ? (
+          <>
+            <nav className="flex items-center gap-1 rounded-full bg-canvas p-1 ring-1 ring-line/70 sm:gap-1.5">
+              <NavLink to="/" end className={navLinkClass}>
+                <Sparkles className="h-4 w-4" />
+                <span className="hidden sm:inline">Generator</span>
+              </NavLink>
+              <NavLink to="/favorites" className={navLinkClass}>
+                <Bookmark className="h-4 w-4" />
+                <span className="hidden sm:inline">Saved</span>
+              </NavLink>
+            </nav>
+
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="hidden items-center gap-2 rounded-full border border-line bg-white py-1 pl-1 pr-3 md:flex">
+                <span className="grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-brand-500 to-sun-500 text-[11px] font-bold text-white">
+                  {initials || 'R'}
                 </span>
-                <Link
-                  to="/change-password"
-                  className="flex items-center gap-1 text-xs font-medium text-[#6B6858] hover:text-[#C1502E] transition-colors"
-                >
-                  <KeyRound className="w-3.5 h-3.5" />
-                  <span>Password</span>
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-1 text-xs font-medium text-[#6B6858] hover:text-[#C1502E] transition-colors"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                  <span>Sign out</span>
-                </button>
+                <span className="max-w-[130px] truncate text-xs font-semibold text-ink">
+                  {displayName}
+                </span>
               </div>
-            </>
-          ) : (
-            <div className="flex items-center gap-3 text-xs sm:text-sm">
+
               <Link
-                to="/login"
-                className="flex items-center gap-1 text-[#5C5A4E] hover:text-[#C1502E] font-medium transition-colors"
+                to="/change-password"
+                title="Change password"
+                className="grid h-10 w-10 place-items-center rounded-full text-muted transition-colors hover:bg-canvas-2 hover:text-brand-600"
               >
-                <LogIn className="w-4 h-4" />
-                <span>Sign in</span>
+                <KeyRound className="h-[18px] w-[18px]" />
+                <span className="sr-only">Change password</span>
               </Link>
-              <Link
-                to="/register"
-                className="flex items-center gap-1 bg-[#C1502E] hover:bg-[#993C1D] text-[#FFFBF2] px-3 py-1.5 rounded-sm font-medium transition-colors shadow-xs"
+
+              <button
+                onClick={handleLogout}
+                title="Sign out"
+                className="grid h-10 w-10 place-items-center rounded-full text-muted transition-colors hover:bg-berry-50 hover:text-berry-600"
               >
-                <UserPlus className="w-4 h-4" />
-                <span>Sign up</span>
-              </Link>
+                <LogOut className="h-[18px] w-[18px]" />
+                <span className="sr-only">Sign out</span>
+              </button>
             </div>
-          )}
-        </div>
+          </>
+        ) : (
+          <div className="flex items-center gap-2">
+            <Link
+              to="/login"
+              className="flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full px-3 py-2 text-[13px] font-semibold text-muted transition-colors hover:bg-canvas-2 hover:text-ink"
+            >
+              <LogIn className="h-4 w-4" />
+              <span>Sign in</span>
+            </Link>
+            <Link
+              to="/register"
+              className="flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-gradient-to-r from-brand-500 to-brand-400 px-3.5 py-2 text-[13px] font-semibold text-white shadow-glow transition-all hover:from-brand-600 hover:to-brand-500"
+            >
+              <UserPlus className="h-4 w-4" />
+              <span className="hidden sm:inline">Sign up</span>
+            </Link>
+          </div>
+        )}
       </div>
     </header>
   );

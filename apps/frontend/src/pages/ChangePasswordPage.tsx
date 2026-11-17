@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { api } from '../api/client';
-import { ChefHat, AlertCircle, CheckCircle2, Lock } from 'lucide-react';
+import { AlertCircle, ArrowLeft, CheckCircle2, KeyRound, Lock } from 'lucide-react';
+import { AuthShell } from '../components/AuthShell';
+import { Logo } from '../components/ui/Logo';
+import { Input } from '../components/ui/Field';
+import { Button } from '../components/ui/Button';
 
 export const ChangePasswordPage: React.FC = () => {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -47,100 +51,95 @@ export const ChangePasswordPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 bg-[#F4EFE3]">
-      <div className="w-full max-w-sm my-6 bg-[#FFFBF2] border border-[#D8CFB8] rounded-2xl relative px-8 py-9">
-        <div
-          className="absolute left-0 top-5 bottom-5 w-[2px]"
-          style={{
-            background: 'repeating-linear-gradient(to bottom, #C1502E 0 6px, transparent 6px 12px)',
-          }}
-        />
+    <AuthShell>
+      <div className="rounded-3xl border border-line bg-surface p-6 shadow-soft sm:p-8">
+        <div className="mb-6 flex items-center justify-between">
+          <Logo size="sm" showAiBadge={false} />
+          <span className="grid h-9 w-9 place-items-center rounded-xl bg-brand-50 text-brand-600 ring-1 ring-brand-100">
+            <KeyRound className="h-4.5 w-4.5" />
+          </span>
+        </div>
 
-        <div className="pl-1.5">
-          <div className="flex items-center gap-2 mb-3">
-            <ChefHat className="w-5 h-5 text-[#C1502E]" />
-            <span className="text-sm font-medium text-[#8A6B3F]">Reciptor</span>
+        <h1 className="font-display text-[26px] leading-tight text-ink">Change password</h1>
+        <p className="mt-1.5 mb-6 text-[13.5px] leading-relaxed text-muted">
+          Pick something fresh — at least 8 characters.
+        </p>
+
+        {error && (
+          <div className="mb-4 flex items-start gap-2.5 rounded-xl border border-berry-500/25 bg-berry-50 p-3 text-[13px] font-medium text-berry-600">
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>{error}</span>
           </div>
+        )}
 
-          <h1 className="font-serif text-[26px] font-semibold text-[#2B2E23] mb-1">
-            Change password
-          </h1>
-          <p className="text-[13px] text-[#6B6858] mb-6">Update the password for your account.</p>
-
-          {error && (
-            <div className="mb-4 p-3 bg-[#FAECE7] border border-[#F0997B] rounded-sm flex items-center gap-2 text-[#993C1D] text-sm">
-              <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>{error}</span>
-            </div>
-          )}
-
-          {success && (
-            <div className="mb-4 p-3 bg-[#EAF3EA] border border-[#9CC59C] rounded-sm flex items-center gap-2 text-[#2F5F2F] text-sm">
-              <CheckCircle2 className="w-4 h-4 shrink-0" />
-              <span>{success}</span>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-3.5">
-            <label className="block text-xs text-[#5C5A4E]">
-              Current password
-              <input
-                type="password"
-                required
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full h-10 mt-1.5 px-3 border border-[#D8CFB8] bg-[#FFFDF8] rounded-lg text-sm text-[#2B2E23] placeholder:text-[#A9A18A] focus:outline-none focus:border-[#C1502E]"
-              />
-            </label>
-
-            <label className="block text-xs text-[#5C5A4E]">
-              New password
-              <input
-                type="password"
-                required
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full h-10 mt-1.5 px-3 border border-[#D8CFB8] bg-[#FFFDF8] rounded-lg text-sm text-[#2B2E23] placeholder:text-[#A9A18A] focus:outline-none focus:border-[#C1502E]"
-              />
-            </label>
-
-            <label className="block text-xs text-[#5C5A4E]">
-              Confirm new password
-              <input
-                type="password"
-                required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full h-10 mt-1.5 px-3 border border-[#D8CFB8] bg-[#FFFDF8] rounded-lg text-sm text-[#2B2E23] placeholder:text-[#A9A18A] focus:outline-none focus:border-[#C1502E]"
-              />
-            </label>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full h-11 mt-2 bg-[#C1502E] hover:bg-[#993C1D] text-[#FFFBF2] text-sm font-medium rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-            >
-              <Lock className="w-4 h-4" />
-              {loading ? 'Updating…' : 'Update password'}
-            </button>
-          </form>
-
-          <div className="flex items-center justify-between mt-5 pt-4 border-t border-[#E3DCC8] text-xs">
-            <button
-              onClick={() => navigate(-1)}
-              className="font-medium text-[#3D4A2C] hover:underline"
-            >
-              Go back
-            </button>
-            <Link to="/" className="text-[#A9A18A] hover:underline">
-              Home
-            </Link>
+        {success && (
+          <div className="mb-4 flex items-start gap-2.5 rounded-xl border border-leaf-500/25 bg-leaf-50 p-3 text-[13px] font-medium text-leaf-600">
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>{success}</span>
           </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Input
+            label="Current password"
+            type="password"
+            required
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            placeholder="••••••••"
+            leading={<Lock className="h-4 w-4" />}
+            autoComplete="current-password"
+          />
+
+          <Input
+            label="New password"
+            type="password"
+            required
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            placeholder="••••••••"
+            leading={<Lock className="h-4 w-4" />}
+            autoComplete="new-password"
+            hint="Use at least 8 characters."
+          />
+
+          <Input
+            label="Confirm new password"
+            type="password"
+            required
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="••••••••"
+            leading={<Lock className="h-4 w-4" />}
+            autoComplete="new-password"
+            state={
+              confirmPassword.length > 0 && confirmPassword !== newPassword ? 'bad' : 'default'
+            }
+            hint={
+              confirmPassword.length > 0 && confirmPassword !== newPassword
+                ? 'Passwords do not match.'
+                : undefined
+            }
+          />
+
+          <Button type="submit" size="lg" fullWidth loading={loading} className="mt-1">
+            {loading ? 'Updating…' : 'Update password'}
+          </Button>
+        </form>
+
+        <div className="mt-6 flex items-center justify-between border-t border-line pt-4 text-[12.5px]">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-1.5 font-semibold text-muted transition-colors hover:text-ink"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" />
+            Go back
+          </button>
+          <Link to="/" className="font-semibold text-brand-600 hover:text-brand-700">
+            Back to generator
+          </Link>
         </div>
       </div>
-    </div>
+    </AuthShell>
   );
 };

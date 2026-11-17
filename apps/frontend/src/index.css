@@ -1,17 +1,166 @@
 @import 'tailwindcss';
 
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color-scheme: light dark;
+@theme {
+  /* Typography */
+  --font-sans:
+    'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif;
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Georgia, 'Times New Roman', serif;
+
+  /* Surfaces */
+  --color-canvas: #fff8f1;
+  --color-canvas-2: #ffefdf;
+  --color-surface: #ffffff;
+  --color-line: #f2e3d3;
+  --color-line-strong: #e8d3bd;
+
+  /* Text */
+  --color-ink: #241d1c;
+  --color-muted: #7c6f68;
+
+  /* Brand — fresh carrot */
+  --color-brand-50: #fff4ec;
+  --color-brand-100: #ffe7d6;
+  --color-brand-200: #feceac;
+  --color-brand-300: #fdac79;
+  --color-brand-400: #fb8343;
+  --color-brand-500: #f76816;
+  --color-brand-600: #e05208;
+  --color-brand-700: #b93f08;
+
+  /* Leaf — basil green */
+  --color-leaf-50: #edfbf1;
+  --color-leaf-100: #d6f5e0;
+  --color-leaf-500: #20a556;
+  --color-leaf-600: #178744;
+  --color-leaf-700: #146c39;
+
+  /* Berry */
+  --color-berry-50: #fdeef1;
+  --color-berry-500: #e23e57;
+  --color-berry-600: #c62b44;
+
+  /* Sun */
+  --color-sun-50: #fff8e6;
+  --color-sun-500: #f5b83d;
+
+  /* Effects */
+  --shadow-soft: 0 10px 30px -14px rgb(120 68 30 / 0.22);
+  --shadow-lift: 0 24px 48px -22px rgb(120 68 30 / 0.34);
+  --shadow-glow: 0 16px 40px -12px rgb(247 104 22 / 0.45);
 }
 
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 1000px #fffdf8 inset !important;
-  -webkit-text-fill-color: #2b2e23 !important;
-  caret-color: #2b2e23;
-  transition: background-color 5000s ease-in-out 0s;
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: var(--color-brand-200);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+    -webkit-text-fill-color: var(--color-ink) !important;
+    caret-color: var(--color-ink);
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-line-strong);
+    border-radius: 999px;
+    border: 2px solid var(--color-canvas);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-brand-300);
+  }
+}
+
+@layer utilities {
+  .animate-rise {
+    animation: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-shimmer {
+    background-image: linear-gradient(
+      100deg,
+      rgb(255 255 255 / 0) 20%,
+      rgb(255 255 255 / 0.65) 40%,
+      rgb(255 255 255 / 0) 60%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s linear infinite;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise,
+  .animate-float,
+  .animate-shimmer {
+    animation: none;
+  }
 }

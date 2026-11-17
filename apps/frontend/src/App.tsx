@@ -15,7 +15,7 @@ const AppRoutes: React.FC = () => {
   const { isAuthenticated } = useAuth();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50/60 via-orange-50/30 to-stone-100 text-stone-800 font-sans antialiased">
+    <div className="min-h-screen bg-canvas text-ink">
       <Header />
       <Routes>
         {/* Unauthenticated users start at /login */}
