@@ -122,9 +122,62 @@ export class GeminiService {
     // Attach a dish image (real food photo from a free API, local illustration as fallback).
     if (recipe) {
       recipe.imageData = await this.buildDishImage(recipe, dto);
+      this.tagPantryIngredients(recipe, dto.ingredients);
     }
 
     return recipe;
+  }
+
+  private readonly PANTRY_STAPLES = new Set([
+    'salt',
+    'pepper',
+    'black pepper',
+    'water',
+    'oil',
+    'olive oil',
+    'vegetable oil',
+    'vinegar',
+    'butter',
+    'sugar',
+    'flour',
+  ]);
+
+  private normalizeIngredientName(name: string): string {
+    return String(name || '')
+      .toLowerCase()
+      .trim()
+      .replace(/\s*\([^)]*\)\s*/g, ' ')
+      .replace(/\s+/g, ' ')
+      .replace(/(e?s)$/i, '')
+      .trim();
+  }
+
+  private tagPantryIngredients(recipe: any, input: string[]): void {
+    if (!Array.isArray(recipe?.ingredients)) return;
+
+    const inputSet = new Set(
+      (input || []).map((i) => this.normalizeIngredientName(i)).filter(Boolean),
+    );
+
+    recipe.ingredients = recipe.ingredients.map((ing: any) => {
+      const norm = this.normalizeIngredientName(String(ing?.name || ''));
+
+      if (this.PANTRY_STAPLES.has(norm)) {
+        return { ...ing, inPantry: true };
+      }
+
+      let inPantry = inputSet.has(norm);
+      if (!inPantry) {
+        for (const userInput of inputSet) {
+          if (userInput && (norm.includes(userInput) || userInput.includes(norm))) {
+            inPantry = true;
+            break;
+          }
+        }
+      }
+
+      return { ...ing, inPantry };
+    });
   }
 
   /**

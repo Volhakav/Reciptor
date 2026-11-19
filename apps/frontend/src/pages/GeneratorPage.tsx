@@ -27,7 +27,7 @@ interface RecipeResult {
   proteins: number;
   fats: number;
   carbs: number;
-  ingredients: Array<{ name: string; amount: number; unit: string }>;
+  ingredients: Array<{ name: string; amount: number; unit: string; inPantry?: boolean }>;
   instructions: Array<{ step: number; title: string; text: string }>;
 }
 
@@ -102,6 +102,24 @@ export const GeneratorPage: React.FC = () => {
     } catch (err: any) {
       console.error(err);
     }
+  };
+
+  const normalizeIng = (s: string) =>
+    s
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, ' ')
+      .replace(/(e?s)$/i, '');
+
+  const isMissing = (ing: { name: string; inPantry?: boolean }) => {
+    if (ing.inPantry === false) return true;
+    if (ing.inPantry === true) return false;
+    // Fallback (stare przepisy / brak flagi): porównanie po nazwie.
+    return !ingredients.some((inp) => {
+      const a = normalizeIng(inp);
+      const b = normalizeIng(ing.name);
+      return a === b || a.includes(b) || b.includes(a);
+    });
   };
 
   return (
@@ -453,18 +471,46 @@ export const GeneratorPage: React.FC = () => {
                       <h3 className="mb-2.5 flex items-center gap-2 text-[13px] font-bold uppercase tracking-wider text-muted">
                         <span className="text-base">🥗</span> Ingredients
                       </h3>
+                      <div className="mb-2 flex items-center gap-3 text-[10.5px] font-semibold text-muted">
+                        <span className="flex items-center gap-1">
+                          <span className="h-2 w-2 rounded-full bg-brand-500" /> to buy
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <span className="h-2 w-2 rounded-full bg-line-strong" /> have
+                        </span>
+                      </div>
                       <ul className="divide-y divide-line rounded-2xl border border-line bg-canvas/60 px-4">
-                        {recipe.ingredients.map((ing, idx) => (
-                          <li
-                            key={idx}
-                            className="flex items-center justify-between gap-3 py-2.5 text-[13px]"
-                          >
-                            <span className="font-medium text-ink">{ing.name}</span>
-                            <span className="shrink-0 rounded-full bg-white px-2.5 py-0.5 text-[11.5px] font-bold text-brand-600 ring-1 ring-brand-100">
-                              {ing.amount} {ing.unit}
-                            </span>
-                          </li>
-                        ))}
+                        {recipe.ingredients.map((ing, idx) => {
+                          const missing = isMissing(ing);
+                          return (
+                            <li
+                              key={idx}
+                              className="flex items-center justify-between gap-3 py-2.5 text-[13px]"
+                            >
+                              <span className="flex items-center gap-2 font-medium text-ink">
+                                {missing && (
+                                  <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
+                                )}
+                                {ing.name}
+                                {missing && (
+                                  <span className="text-[10px] font-bold uppercase tracking-wide text-brand-600">
+                                    buy
+                                  </span>
+                                )}
+                              </span>
+                              <span
+                                className={
+                                  'shrink-0 rounded-full px-2.5 py-0.5 text-[11.5px] font-bold ring-1 ' +
+                                  (missing
+                                    ? 'bg-brand-50 text-brand-700 ring-brand-200'
+                                    : 'bg-white text-brand-600 ring-brand-100')
+                                }
+                              >
+                                {ing.amount} {ing.unit}
+                              </span>
+                            </li>
+                          );
+                        })}
                       </ul>
                     </div>
 
